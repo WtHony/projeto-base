@@ -47,6 +47,7 @@ class Consts:
     LE = '<='
     GE = '>='
 
+
     # Exemplos de Palavras reservadas
     LET         = 'let'
     IF          = 'if'
@@ -59,11 +60,15 @@ class Consts:
     WHILE       = 'while'
     DO          = 'do'
     FOR         = 'for'
+    IN          = 'in'
+    RANGE       = 'range'
     KEYS = [
         LET,
         IF,
         WHILE,
-        FOR
+        FOR,
+        IN,
+        RANGE,
     ]
     KEYS += [TRUE, FALSE, IF, THEN, ELSE, WHILE, DO]
 

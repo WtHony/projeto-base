@@ -166,14 +166,12 @@ class Lexer:
         while self.current != None and self.current in Consts.LETRAS_DIGITOS + Consts.UNDER:
             lexema += self.current
             self.__advance()
-
         if lexema in Consts.KEYS:
             if lexema == Consts.TRUE or lexema == Consts.FALSE:
                 tokType = Consts.BOOL
             else:
-                tokType = Consts.KEY
+                tokType = Consts.KEY # Isso já cobre FOR, IN, RANGE
         else:
             tokType = Consts.ID
-
         return Token(tokType, lexema)
     ##############################

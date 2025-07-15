@@ -233,3 +233,49 @@ class NoWhile(Visitor):
 
 	def __repr__(self):
 		return f"(while {self.conditionNode} do {self.bodyNode})"
+
+class NoFor(Visitor):
+    def __init__(self, varNameTok, startNode, endNode, bodyNode):
+        self.varNameTok = varNameTok
+        self.startNode = startNode  # Pode ser None se for apenas 'range(end)'
+        self.endNode = endNode
+        self.bodyNode = bodyNode
+
+    def visit(self, operator):
+        var_name = self.varNameTok.value
+
+        # Avalia o valor final do range
+        end_val_obj = operator.registry(self.endNode.visit(operator))
+        if operator.error: return operator
+        if not isinstance(end_val_obj, TNumber):
+            return operator.fail(Error(f"{Error.runTimeError}: O valor final do range deve ser um número"))
+        end_value = int(end_val_obj.value)
+
+        # Avalia o valor inicial do range
+        start_value = 0
+        if self.startNode:
+            start_val_obj = operator.registry(self.startNode.visit(operator))
+            if operator.error: return operator
+            if not isinstance(start_val_obj, TNumber):
+                return operator.fail(Error(f"{Error.runTimeError}: O valor inicial do range deve ser um número"))
+            start_value = int(start_val_obj.value)
+
+        # Executa o loop
+        for i in range(start_value, end_value):
+            # Define a variável de iteração na tabela de símbolos
+            operator.symbolTable.set(var_name, TNumber(i).setMemory(operator))
+
+            # Avalia o corpo do loop e imprime o valor de i
+            result = operator.registry(self.bodyNode.visit(operator))
+            if operator.error: return operator  # Se houver erro no corpo, propaga
+
+            # Imprime o resultado de i
+            print(i)
+
+        return operator.success(TString("ok"))  # Retorna "ok" ou outro valor indicando sucesso
+
+    def __repr__(self):
+        if self.startNode:
+            return f"(for {self.varNameTok} in range({self.startNode}, {self.endNode}) do {self.bodyNode})"
+        else:
+            return f"(for {self.varNameTok} in range({self.endNode}) do {self.bodyNode})"

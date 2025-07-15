@@ -10,7 +10,7 @@
 <ExpRelacional> ::= <ExpAritmetica> ((== | != | < | > | <= | >=) <ExpAritmetica>)*
 <ExpAritmetica> ::= já definida como antes (soma, subtração, etc.)
 <TupleExp> ::= LPAR [ <Exp> (COMMA <Exp>)* ] RPAR
-
+<ForExp> ::= FOR ID IN RANGE LPAR <Exp> (COMMA <Exp>)* RPAR DO <Exp>
 
 PLUS é o +
 MUL é o *

@@ -214,13 +214,14 @@ Caso contrário, ela envia para ExpRelacional, que trata as outras expreções (
 class Exp(Grammar):
     def Rule(self):
         ast = self.GetParserManager()
-
         if self.CurrentToken().matches(Consts.KEY, Consts.IF):
             return IfExp(self.parser).Rule()
-
         if self.CurrentToken().matches(Consts.KEY, Consts.WHILE):
             return WhileExp(self.parser).Rule()
-
+        
+        # Adicione a regra para ForExp
+        if self.CurrentToken().matches(Consts.KEY, Consts.FOR):
+            return ForExp(self.parser).Rule()
         return ExpRelacional(self.parser).Rule()
 
 class WhileExp(Grammar):
@@ -244,3 +245,49 @@ class WhileExp(Grammar):
         if ast.error: return ast
 
         return ast.success(NoWhile(cond, body))
+class ForExp(Grammar):
+    def Rule(self):
+        ast = self.GetParserManager()
+        # Consome 'for'
+        if not self.CurrentToken().matches(Consts.KEY, Consts.FOR):
+            return ast.fail(f"{Error.parserError}: Esperado '{Consts.FOR}'")
+        self.NextToken()
+        # Espera por um ID (variável de iteração)
+        if self.CurrentToken().type != Consts.ID:
+            return ast.fail(f"{Error.parserError}: Esperado '{Consts.ID}' após 'for'")
+        var_name_tok = self.CurrentToken()
+        self.NextToken()
+        # Consome 'in'
+        if not self.CurrentToken().matches(Consts.KEY, Consts.IN):
+            return ast.fail(f"{Error.parserError}: Esperado '{Consts.IN}' após o identificador")
+        self.NextToken()
+        # Consome 'range'
+        if not self.CurrentToken().matches(Consts.KEY, Consts.RANGE):
+            return ast.fail(f"{Error.parserError}: Esperado '{Consts.RANGE}' após 'in'")
+        self.NextToken()
+        # Consome '('
+        if self.CurrentToken().type != Consts.LPAR:
+            return ast.fail(f"{Error.parserError}: Esperado '{Consts.LPAR}' após 'range'")
+        self.NextToken()
+        # Espera pela expressão numérica do range
+        start_value = None
+        end_value = ast.registry(Exp(self.parser).Rule())
+        if ast.error: return ast
+        if self.CurrentToken().type == Consts.COMMA:
+            start_value = end_value
+            self.NextToken()
+            end_value = ast.registry(Exp(self.parser).Rule())
+            if ast.error: return ast
+        # Consome ')'
+        if self.CurrentToken().type != Consts.RPAR:
+            return ast.fail(f"{Error.parserError}: Esperado '{Consts.RPAR}' após a expressão do range")
+        self.NextToken()
+        # Consome 'do' (ou outro token para indicar o início do corpo do loop)
+        # Você pode adaptar isso para 'then' ou outro token se preferir
+        if not self.CurrentToken().matches(Consts.KEY, Consts.DO):
+            return ast.fail(f"{Error.parserError}: Esperado '{Consts.DO}' após o range")
+        self.NextToken()
+        # Corpo do loop
+        body = ast.registry(Exp(self.parser).Rule())
+        if ast.error: return ast
+        return ast.success(NoFor(var_name_tok, start_value, end_value, body))
