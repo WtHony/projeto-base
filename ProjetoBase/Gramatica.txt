@@ -10,7 +10,13 @@
 <ExpRelacional> ::= <ExpAritmetica> ((== | != | < | > | <= | >=) <ExpAritmetica>)*
 <ExpAritmetica> ::= já definida como antes (soma, subtração, etc.)
 <TupleExp> ::= LPAR [ <Exp> (COMMA <Exp>)* ] RPAR
-<ForExp> ::= FOR ID IN RANGE LPAR <Exp> (COMMA <Exp>)* RPAR DO <Exp>
+<ForExp> ::= FOR ID IN RANGE LPAR <Exp> (COMMA <Exp>)* RPAR DO <Exp>    
+
+# Ideia de como seria a gramtica para o dicionario
+<DictionaryExp> ::= LPAR [ <KeyValuePair> (COMMA <KeyValuePair>)* ] RPAR
+<KeyValuePair>  ::= (STRING | ID) COLON <Exp>
+COLON é o :
+COMMA é a ,
 
 PLUS é o +
 MUL é o *
