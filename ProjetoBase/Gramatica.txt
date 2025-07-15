@@ -1,0 +1,26 @@
+<Exp> ::= <Term> ((MINUS | PLUS) <Term>)*
+<Exp> ::= [LET] ID EQ <Exp>
+<Term> ::= <Factor> ((MUL | DIV) <Factor>)*
+<Factor> ::= (PLUS | MINUS)* <Factor>
+<Factor> ::= <Pow>
+<Pow> ::= <Atom> (<Pow> <Factor>)*
+<ListExp> ::= LSQUARE [ <Exp> (COMMA <Exp>)* ] RSQUARE
+<Atom> ::= INT | FLOAT | STRING | ID | <ListExp> | <TupleExp> | LPAR <Exp> RPAR
+<Exp> ::= IF <Exp> THEN <Exp> [ELSE <Exp>] | <ExpRelacional>
+<ExpRelacional> ::= <ExpAritmetica> ((== | != | < | > | <= | >=) <ExpAritmetica>)*
+<ExpAritmetica> ::= já definida como antes (soma, subtração, etc.)
+<TupleExp> ::= LPAR [ <Exp> (COMMA <Exp>)* ] RPAR
+
+
+PLUS é o +
+MUL é o *
+DIV é o /
+MINUS é o -
+POW é o ^
+LPAR é o (
+RPAR é o )
+INT é um inteiro qualquer
+FLOAT é um float qualquer
+ID é qualquer identificador
+LET é a palavra reservada let
+STRING algo entre aspas
