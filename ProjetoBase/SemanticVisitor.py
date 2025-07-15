@@ -1,8 +1,9 @@
-from Error import Error
 import abc
+
 from Consts import Consts
+from Error import Error
 from TTypes import TNumber, TString, TList, TTuple, TBoolean
-from RuntimeMemory import MemoryManager
+
 """
 # * Aqui são incluídos os NO's da AST (Abstract Syntax Tree).
 # * Eles aceitam visitas de operadores de memoria, visando semantica e controle de tipos (para execucao ou compilacao).
@@ -208,3 +209,27 @@ class NoIf(Visitor):
 
 	def __repr__(self):
 		return f"(if {self.conditionNode} then {self.thenNode} else {self.elseNode})"
+
+class NoWhile(Visitor):
+	def __init__(self, conditionNode, bodyNode):
+		self.conditionNode = conditionNode
+		self.bodyNode = bodyNode
+
+	def visit(self, operator):
+		while True:
+			condValue = operator.registry(self.conditionNode.visit(operator))
+			if operator.error: return operator
+
+			if not isinstance(condValue, TBoolean):
+				return operator.fail(Error(f"{Error.runTimeError}: condição do while não é booleana"))
+
+			if not condValue.value:
+				break
+
+			operator.registry(self.bodyNode.visit(operator))
+			if operator.error: return operator
+
+		return operator.success(TString("ok"))
+
+	def __repr__(self):
+		return f"(while {self.conditionNode} do {self.bodyNode})"

@@ -29,74 +29,94 @@ class Lexer:
 #atualizado para receber novos simbolos
     def makeTokens(self):
         tokens = []
-        while self.current != None:
+        while self.current is not None:
             if self.current in ' \t':
                 self.__advance()
+
             elif self.current in Consts.DIGITOS:
                 tokens.append(self.__makeNumber())
-            elif(self.current == '"'):
+
+            elif self.current == '"':
                 tokens.append(self.__MakeString())
-            elif self.current == Consts.PLUS:
-                tokens.append(Token(Consts.PLUS))
-                self.__advance()
-            elif self.current == Consts.MINUS:
-                tokens.append(Token(Consts.MINUS))
-                self.__advance()
-            elif self.current == Consts.MUL:
-                tokens.append(Token(Consts.MUL))
-                self.__advance()
-            elif self.current == Consts.DIV:
-                tokens.append(Token(Consts.DIV))
-                self.__advance()
-            elif self.current == Consts.POW:
-                tokens.append(Token(Consts.POW))
-                self.__advance()
-            elif self.current == Consts.LPAR:
-                tokens.append(Token(Consts.LPAR))
-                self.__advance()
-            elif self.current == Consts.RPAR:
-                tokens.append(Token(Consts.RPAR))
-                self.__advance()
-            ##################################
-            elif self.current in Consts.LETRAS + Consts.UNDER:
-                tokens.append(self.__makeId())
-            elif self.current == Consts.LSQUARE:
-                tokens.append(Token(Consts.LSQUARE))
-                self.__advance()
-            elif self.current == Consts.RSQUARE:
-                tokens.append(Token(Consts.RSQUARE))
-                self.__advance()
-            elif self.current == Consts.COMMA:
-                tokens.append(Token(Consts.COMMA))
-                self.__advance()
-            elif self.current == Consts.EQ:
-                tokens.append(Token(Consts.EQ))
-                self.__advance()
+
+            # Operadores compostos devem vir antes dos simples
             elif self.current == '=' and self.peek() == '=':
                 self.__advance()
                 self.__advance()
                 tokens.append(Token(Consts.EQEQ))
+
             elif self.current == '!' and self.peek() == '=':
                 self.__advance()
                 self.__advance()
                 tokens.append(Token(Consts.NE))
+
             elif self.current == '<' and self.peek() == '=':
                 self.__advance()
                 self.__advance()
                 tokens.append(Token(Consts.LE))
+
             elif self.current == '>' and self.peek() == '=':
                 self.__advance()
                 self.__advance()
                 tokens.append(Token(Consts.GE))
+
+            # Operadores simples
+            elif self.current == Consts.EQ:
+                tokens.append(Token(Consts.EQ))
+                self.__advance()
+
             elif self.current == '<':
                 self.__advance()
                 tokens.append(Token(Consts.LT))
+
             elif self.current == '>':
                 self.__advance()
                 tokens.append(Token(Consts.GT))
-            ##############################
-            else:
+
+            elif self.current == Consts.PLUS:
+                tokens.append(Token(Consts.PLUS))
                 self.__advance()
+
+            elif self.current == Consts.MINUS:
+                tokens.append(Token(Consts.MINUS))
+                self.__advance()
+
+            elif self.current == Consts.MUL:
+                tokens.append(Token(Consts.MUL))
+                self.__advance()
+
+            elif self.current == Consts.DIV:
+                tokens.append(Token(Consts.DIV))
+                self.__advance()
+
+            elif self.current == Consts.POW:
+                tokens.append(Token(Consts.POW))
+                self.__advance()
+
+            elif self.current == Consts.LPAR:
+                tokens.append(Token(Consts.LPAR))
+                self.__advance()
+
+            elif self.current == Consts.RPAR:
+                tokens.append(Token(Consts.RPAR))
+                self.__advance()
+
+            elif self.current == Consts.LSQUARE:
+                tokens.append(Token(Consts.LSQUARE))
+                self.__advance()
+
+            elif self.current == Consts.RSQUARE:
+                tokens.append(Token(Consts.RSQUARE))
+                self.__advance()
+
+            elif self.current == Consts.COMMA:
+                tokens.append(Token(Consts.COMMA))
+                self.__advance()
+
+            elif self.current in Consts.LETRAS + Consts.UNDER:
+                tokens.append(self.__makeId())
+
+            else:
                 return [], Error(f"{Error.lexerError}: lex-symbol '{self.current}' fail!")
 
         tokens.append(Token(Consts.EOF))

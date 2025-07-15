@@ -218,4 +218,29 @@ class Exp(Grammar):
         if self.CurrentToken().matches(Consts.KEY, Consts.IF):
             return IfExp(self.parser).Rule()
 
+        if self.CurrentToken().matches(Consts.KEY, Consts.WHILE):
+            return WhileExp(self.parser).Rule()
+
         return ExpRelacional(self.parser).Rule()
+
+class WhileExp(Grammar):
+    def Rule(self):
+        ast = self.GetParserManager()
+
+        if not self.CurrentToken().matches(Consts.KEY, Consts.WHILE):
+            return ast.fail(f"{Error.parserError}: Esperado '{Consts.WHILE}'")
+
+        self.NextToken()
+
+        cond = ast.registry(Exp(self.parser).Rule())
+        if ast.error: return ast
+
+        if not self.CurrentToken().matches(Consts.KEY, Consts.DO):
+            return ast.fail(f"{Error.parserError}: Esperado '{Consts.DO}'")
+
+        self.NextToken()
+
+        body = ast.registry(Exp(self.parser).Rule())
+        if ast.error: return ast
+
+        return ast.success(NoWhile(cond, body))

@@ -40,12 +40,6 @@ class Consts:
     LSQUARE   = "[" # Left  Box brackets [
     RSQUARE   = "]" # Right Box brackets ]
     COMMA      = ","
-    TRUE = 'true'
-    FALSE = 'false'
-    BOOL = 'BOOL'
-    IF = 'if'
-    THEN = 'then'
-    ELSE = 'else'
     EQEQ = '=='
     NE = '!='
     LT = '<'
@@ -56,7 +50,14 @@ class Consts:
     # Exemplos de Palavras reservadas
     LET         = 'let'
     IF          = 'if'
+    TRUE        = 'true'
+    FALSE       = 'false'
+    BOOL        = 'BOOL'
+    IF          = 'if'
+    THEN        = 'then'
+    ELSE        = 'else'
     WHILE       = 'while'
+    DO          = 'do'
     FOR         = 'for'
     KEYS = [
         LET,
@@ -64,6 +65,6 @@ class Consts:
         WHILE,
         FOR
     ]
-    KEYS += [TRUE, FALSE, IF, THEN, ELSE]
+    KEYS += [TRUE, FALSE, IF, THEN, ELSE, WHILE, DO]
 
 
